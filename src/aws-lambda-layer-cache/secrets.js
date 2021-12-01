@@ -9,8 +9,6 @@ const fs = require('fs')
 const http = require('http')
 const server = http.createServer()
 
-const CACHE_TIMEOUT = !isNaN(process.env.CACHE_TIMEOUT) ? parseInt(process.env.CACHE_TIMEOUT) : 10
-
 const inMemoryCache = {}
 let expirationDate = new Date()
 let cacheConfigContent
@@ -57,7 +55,7 @@ const readFile = async () => {
 
         // Set expiration date cache
         const newExpirationDate = new Date()
-        newExpirationDate.setMinutes(newExpirationDate.getMinutes() + CACHE_TIMEOUT)
+        newExpirationDate.setMinutes(newExpirationDate.getMinutes() + Constants.CACHE_EXPIRATION_MINUTES)
         expirationDate = newExpirationDate
     } catch (err) {
         console.error(`[aws-lambda-layer-cache/readFile] ${err}`)
