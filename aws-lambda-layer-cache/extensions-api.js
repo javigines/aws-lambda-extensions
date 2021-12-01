@@ -1,10 +1,11 @@
 const fetch = require('node-fetch');
 const {basename} = require('path');
 
-const baseUrl = `http://${process.env.AWS_LAMBDA_RUNTIME_API}/2020-01-01/extension`;
+const Constants = require('./constants')
+const BASE_URL = Constants.EXTENSION_BASE_URL
 
 async function register() {
-    const res = await fetch(`${baseUrl}/register`, {
+    const res = await fetch(`${BASE_URL}/register`, {
         method: 'post',
         body: JSON.stringify({
             'events': [
@@ -25,7 +26,7 @@ async function register() {
 }
 
 async function next(extensionId) {
-    const res = await fetch(`${baseUrl}/event/next`, {
+    const res = await fetch(`${BASE_URL}/event/next`, {
         method: 'get',
         headers: {
             'Content-Type': 'application/json',
