@@ -4,17 +4,17 @@ This extension demonstrates how to host an HTTP server which cache secrets requi
 - The extension using config.yaml file inside the Lambda to get the list of secrets that needs to get cached in memory
 - Secrets cache is refreshed based on the value (in minutes) set in the environment variable "CACHE_TIMEOUT". If no value is specified its defaulted to 10
 
-> Note: This extension requires the Node.js 12 runtime to be present in the Lambda execution environment of your function.
+> Note: This extension requires the Node.js 14 runtime to be present in the Lambda execution environment of your function.
 
 ## Overview
 Here is the high level view of all the components
 
-![architecture](nodejs-secrets-aws-lambda-extension/img/SecretManager.png)
+![architecture](docs/img/SecretManager.png)
 
 ## Initializing extension and reading secrets from the cache
 Below sequence diagram explains the initialization of lambda extension and how lambda function
 reads cached secrets using HTTP server hosted inside the extension 
-![init](nodejs-secrets-aws-lambda-extension/img/InitSequence.png)
+![init](docs/img/InitSequence.png)
 
 ## Pre-requisites
 - NodeJS runtime should be installed in the local system, for more information click [here](https://nodejs.org/en/download/)
