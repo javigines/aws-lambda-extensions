@@ -35,8 +35,6 @@ const register = async () => {
         req.end()
     })
 
-    console.info(JSON.stringify(resHeaders))
-
     return resHeaders['lambda-extension-identifier']
 }
 
