@@ -1,10 +1,10 @@
 # shellcheck disable=SC2164
-cd nodejs-secrets-aws-lambda-extension
+cd aws-lambda-layer-cache
 chmod +x *.js
-npm install
+npm install --production
 cd ..
 
-chmod +x extensions/nodejs-secrets-aws-lambda-extension
+chmod +x extensions/aws-lambda-layer-cache
 rm -Rf extension.zip
 zip -r extension.zip .
 
