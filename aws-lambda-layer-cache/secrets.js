@@ -2,11 +2,11 @@
 
 const Constants = require('./constants')
 
+const AWS = require('@aws-sdk/client-secrets-manager')
+const AWSSecretManager = new AWS.SecretsManager()
+
 const fs = require('fs')
 const ExpressAPP = require('express')()
-
-const AWS = require('aws-sdk')
-const AWSSecretManager = new AWS.SecretsManager()
 
 const CACHE_TIMEOUT = !isNaN(process.env.CACHE_TIMEOUT) ? parseInt(process.env.CACHE_TIMEOUT) : 10
 
@@ -47,9 +47,10 @@ const readFile = async () => {
         const secretRecoveryPromises = secretKeys.map(async (secretId) => {
             try {
                 // Read secrets from SecretManager
-                const secretResponse = await AWSSecretManager.getSecretValue({ SecretId: secretId }).promise()
+                const secretResponse = await AWSSecretManager.getSecretValue({ SecretId: secretId })
                 inMemoryCache[secretId] = secretResponse.SecretString
             } catch (e) {
+                console.log(JSON.stringify(e))
                 console.log('Error while getting secret name ' + secretId)
             }
         })
@@ -74,7 +75,7 @@ const processPayload = async (req, res) => {
     const secretRequested = req.params['name']
     const secretCache = inMemoryCache[secretRequested]
 
-    res.setHeader('Content-Type', 'application/json').status(200).end({ $secretRequested: secretCache })
+    res.status(200).json({ $secretRequested: secretCache })
 }
 
 module.exports = {
