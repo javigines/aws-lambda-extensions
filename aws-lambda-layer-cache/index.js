@@ -19,8 +19,8 @@ const main = async () => {
 
     // execute extensions logic
 
-    await SecretCaches.initCache()
-    await SecretCaches.startHttpServer()
+    SecretCaches.initCache()
+    SecretCaches.startHttpServer()
 
     while (true) {
         const event = await ExtensionsAPI.next(extensionId)
