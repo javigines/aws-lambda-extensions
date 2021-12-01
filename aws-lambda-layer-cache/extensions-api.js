@@ -1,43 +1,85 @@
-const fetch = require('node-fetch')
 const { basename } = require('path')
+const http = require('http')
 
-const Constants = require('./constants')
-const BASE_URL = Constants.EXTENSION_BASE_URL
+const [BASE_URL, PORT] = process.env.AWS_LAMBDA_RUNTIME_API.split(':')
 
 const register = async () => {
-    const res = await fetch(`${BASE_URL}/register`, {
-        method: 'post',
-        body: JSON.stringify({
-            events: ['SHUTDOWN'],
-        }),
+    const options = {
+        method: 'POST',
+        hostname: BASE_URL,
+        port: PORT,
+        path: '/2020-01-01/extension/register',
         headers: {
             'Content-Type': 'application/json',
             'Lambda-Extension-Name': basename(__dirname),
         },
-    })
-
-    if (!res.ok) {
-        console.error('register failed', await res.text())
+        maxRedirects: 20,
     }
 
-    return res.headers.get('lambda-extension-identifier')
+    const resHeaders = await new Promise((resolve, reject) => {
+        const req = http.request(options, function (res) {
+            resolve(res.headers)
+
+            res.on('error', function (error) {
+                console.error(error)
+                reject(error)
+            })
+        })
+
+        req.write(
+            JSON.stringify({
+                events: ['SHUTDOWN'],
+            })
+        )
+
+        req.end()
+    })
+
+    console.info(JSON.stringify(resHeaders))
+
+    return resHeaders['lambda-extension-identifier']
 }
 
 const next = async (extensionId) => {
-    const res = await fetch(`${BASE_URL}/event/next`, {
-        method: 'get',
+    const options = {
+        method: 'GET',
+        hostname: BASE_URL,
+        port: PORT,
+        path: '/2020-01-01/extension/event/next',
         headers: {
             'Content-Type': 'application/json',
             'Lambda-Extension-Identifier': extensionId,
         },
-    })
-
-    if (!res.ok) {
-        console.error('next failed', await res.text())
-        return null
+        maxRedirects: 20,
     }
+    return await new Promise((resolve, reject) => {
+        var req = http.request(options, function (res) {
+            var chunks = []
 
-    return await res.json()
+            res.on('data', function (chunk) {
+                chunks.push(chunk)
+            })
+
+            res.on('end', function (chunk) {
+                var body = Buffer.concat(chunks)
+                console.log(body.toString())
+                let result
+                try {
+                    result = JSON.parse(body.toString())
+                } catch (error) {
+                    result = body.toString()
+                }
+                resolve(result)
+            })
+
+            res.on('error', function (error) {
+                console.error(error)
+                reject(error)
+            })
+        })
+
+        req.end()
+    })
 }
 
 module.exports = {
