@@ -6,7 +6,8 @@ const AWS = require('@aws-sdk/client-secrets-manager')
 const AWSSecretManager = new AWS.SecretsManager()
 
 const fs = require('fs')
-const ExpressAPP = require('express')()
+const http = require('http')
+const server = http.createServer()
 
 const CACHE_TIMEOUT = !isNaN(process.env.CACHE_TIMEOUT) ? parseInt(process.env.CACHE_TIMEOUT) : 10
 
@@ -26,13 +27,10 @@ const initCache = () => {
 }
 
 const startHttpServer = () => {
-    ExpressAPP.get('/cache/:name', async function (req, res) {
-        return await processPayload(req, res)
-    })
+    server.on('request', processPayload)
 
-    ExpressAPP.listen(Constants.LOCALHOST_PORT, function (error) {
-        if (error) throw error
-        console.log('Server created Successfully on PORT', Constants.LOCALHOST_PORT)
+    server.listen(Constants.LOCALHOST_PORT, () => {
+        console.log('Server created Successfully on', server.address())
     })
 }
 
@@ -72,10 +70,13 @@ const processPayload = async (req, res) => {
         console.log('Cache update is complete')
     }
 
-    const secretRequested = req.params['name']
+    const baseURL = req.protocol + '://' + req.headers.host + '/'
+    const reqUrl = new URL(req.url, baseURL)
+
+    const secretRequested = reqUrl.pathname.substr(1)
     const secretCache = inMemoryCache[secretRequested]
 
-    res.status(200).json({ $secretRequested: secretCache })
+    res.writeHead(200, { 'Content-Type': 'application/json' }).end(JSON.stringify({ $secretRequested: secretCache }))
 }
 
 module.exports = {
