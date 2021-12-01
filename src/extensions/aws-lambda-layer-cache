@@ -5,5 +5,5 @@ set -euo pipefail
 OWN_FILENAME="$(basename $0)"
 LAMBDA_EXTENSION_NAME="$OWN_FILENAME"
 
-echo "${LAMBDA_EXTENSION_NAME}  launching extension"
+echo "[aws-lambda-layer-cache] ${LAMBDA_EXTENSION_NAME} launching extension"
 exec "/opt/${LAMBDA_EXTENSION_NAME}/index.js"

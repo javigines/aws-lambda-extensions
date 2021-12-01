@@ -20,9 +20,9 @@ const register = async () => {
         const req = http.request(options, function (res) {
             resolve(res.headers)
 
-            res.on('error', function (error) {
-                console.error(error)
-                reject(error)
+            res.on('error', function (err) {
+                console.error(`[aws-lambda-layer-cache/register] ${err}`)
+                reject(err)
             })
         })
 
@@ -60,7 +60,6 @@ const next = async (extensionId) => {
 
             res.on('end', function (chunk) {
                 var body = Buffer.concat(chunks)
-                console.log(body.toString())
                 let result
                 try {
                     result = JSON.parse(body.toString())
@@ -70,9 +69,9 @@ const next = async (extensionId) => {
                 resolve(result)
             })
 
-            res.on('error', function (error) {
-                console.error(error)
-                reject(error)
+            res.on('error', function (err) {
+                console.error(`[aws-lambda-layer-cache/next] ${err}`)
+                reject(err)
             })
         })
 

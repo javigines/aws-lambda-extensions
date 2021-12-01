@@ -19,7 +19,7 @@ const initCache = () => {
     if (cacheConfigContent) return
     fs.open(Constants.CACHE_CONFIG_PATH, 'r', (err) => {
         if (err && err.code === 'ENOENT') {
-            console.log('Config.yaml doesnt exist so no parsing required')
+            console.info('[aws-lambda-layer-cache/initCache] config doesnt exist so no parsing required')
             return
         }
         readFile()
@@ -30,7 +30,7 @@ const startHttpServer = () => {
     server.on('request', processPayload)
 
     server.listen(Constants.LOCALHOST_PORT, () => {
-        console.log('Server created Successfully on', server.address())
+        console.debug('[aws-lambda-layer-cache/startHttpServer] Server created Successfully on', server.address())
     })
 }
 
@@ -48,8 +48,8 @@ const readFile = async () => {
                 const secretResponse = await AWSSecretManager.getSecretValue({ SecretId: secretId })
                 inMemoryCache[secretId] = secretResponse.SecretString
             } catch (e) {
-                console.log(JSON.stringify(e))
-                console.log('Error while getting secret name ' + secretId)
+                console.error('[aws-lambda-layer-cache/readFile] Error while getting secret name ' + secretId)
+                console.error(`[aws-lambda-layer-cache/readFile] ${JSON.stringify(e)}`)
             }
         })
 
@@ -59,15 +59,15 @@ const readFile = async () => {
         const newExpirationDate = new Date()
         newExpirationDate.setMinutes(newExpirationDate.getMinutes() + CACHE_TIMEOUT)
         expirationDate = newExpirationDate
-    } catch (e) {
-        console.error(e)
+    } catch (err) {
+        console.error(`[aws-lambda-layer-cache/readFile] ${err}`)
     }
 }
 
 const processPayload = async (req, res) => {
     if (new Date().getTime() > expirationDate.getTime()) {
         await readFile()
-        console.log('Cache update is complete')
+        console.info('[aws-lambda-layer-cache/processPayload] Cache update is complete')
     }
 
     const baseURL = req.protocol + '://' + req.headers.host + '/'

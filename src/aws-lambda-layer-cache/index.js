@@ -7,7 +7,7 @@ const EventType = {
 }
 
 const handleShutdown = (event) => {
-    console.log('Shutting down the container')
+    console.info('[aws-lambda-layer-cache/handleShutdown] Shutting down the container')
     process.exit(0)
 }
 
