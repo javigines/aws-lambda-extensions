@@ -19,7 +19,7 @@ const main = async () => {
 
     // execute extensions logic
 
-    await SecretCaches.cacheSecrets()
+    await SecretCaches.initCache()
     await SecretCaches.startHttpServer()
 
     while (true) {
