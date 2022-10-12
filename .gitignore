@@ -1,5 +1,4 @@
 node_modules
-package-lock.json
 
 .DS_Store
 
@@ -29,6 +28,5 @@ build/
 .serverless_plugins
 env.js
 tmp
-package-lock.json
 yarn.lock
 test

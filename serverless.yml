@@ -1,12 +1,15 @@
 org: webel
 app: aws-lambda-layer-cache
-name: aws-lambda-layer-cache
 component: aws-lambda-layer
+
+name: aws-lambda-layer-cache
 region: eu-west-1
 
 inputs:
-  name: ${app}-${stage}
-  region: eu-west-1
-  src: ./src
-  runtimes:
-    - nodejs14.x
+    name: ${app}-${stage}
+    region: eu-west-1
+    src: ./src
+    runtimes:
+        - nodejs16.x
+        - nodejs14.x
+        - nodejs12.x
