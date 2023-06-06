@@ -63,7 +63,7 @@ const readFile = async () => {
 }
 
 const processPayload = async (req, res) => {
-    if (new Date().getTime() > expirationDate.getTime()) {
+    if (new Date().getTime() > expirationDate.getTime() || req.headers['x-cache-update'] === 'true') {
         await readFile()
         console.info('[aws-lambda-layer-cache/processPayload] Cache update is complete')
     }
