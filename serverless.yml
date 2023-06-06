@@ -1,15 +1,35 @@
-org: webel
-app: aws-lambda-layer-cache
-component: aws-lambda-layer
+# Serverless Framework variables (Disabled to disable Serverless Dashboard)
+# org: webel
+# app: aws-lambda-layer-cache
+service: aws-lambda-layer
 
-name: aws-lambda-layer-cache
-region: eu-west-1
+provider:
+    name: aws
+    deploymentMethod: direct
+    stage: ${opt:stage, 'dev'}
+    region: 'eu-west-1'
 
-inputs:
-    name: ${app}-${stage}
-    region: eu-west-1
-    src: ./src
-    runtimes:
-        - nodejs16.x
-        - nodejs14.x
-        - nodejs12.x
+    stackName: aws-lambda-layer
+
+    deploymentBucket:
+        name: webel-serverless-deployments-${self:provider.region}
+        maxPreviousDeploymentArtifacts: 10
+        blockPublicAccess: true
+        skipPolicySetup: true
+
+layers:
+    hello:
+        path: ./src # required, path to layer contents on disk
+        name: aws-lambda-layer-cache # optional, Deployed Lambda layer name
+        compatibleRuntimes: # optional, a list of runtimes this layer is compatible with
+            - nodejs18.x
+            - nodejs16.x
+            - nodejs14.x
+        compatibleArchitectures: # optional, a list of architectures this layer is compatible with
+            - x86_64
+            - arm64
+        licenseInfo: GPLv3 # optional, a string specifying license information
+        # allowedAccounts: # optional, a list of AWS account IDs allowed to access this layer.
+        #   - '*'
+        # note: uncommenting this will give all AWS users access to this layer unconditionally.
+        retain: true # optional, false by default. If true, layer versions are not deleted as new ones are created

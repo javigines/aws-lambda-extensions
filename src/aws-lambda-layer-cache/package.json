@@ -1,9 +1,9 @@
 {
     "name": "aws-lambda-layer-cache",
-    "version": "1.0.0",
+    "version": "1.1.0",
     "main": "index.js",
     "license": "MIT",
     "dependencies": {
-        "@aws-sdk/client-secrets-manager": "^3.186.0"
+        "@aws-sdk/client-secrets-manager": "^3.345.0"
     }
 }

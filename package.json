@@ -1,13 +1,12 @@
 {
     "name": "aws-lambda-layer-cache",
-    "version": "1.0.1",
+    "version": "1.1.0",
     "license": "MIT",
     "scripts": {
-        "build": "cd src/aws-lambda-layer-cache && npm install --production && chmod +x *.js && cd ../extensions && chmod +x aws-lambda-layer-cache && cd ../../",
-        "deploy": "npm run build && components deploy --stage"
+        "build": "cd src/aws-lambda-layer-cache && npm install --omit dev && chmod +x *.js && cd ../extensions && chmod +x aws-lambda-layer-cache && cd ../../",
+        "deploy": "npm run build && serverless deploy"
     },
     "devDependencies": {
-        "@serverless/components": "^3.18.2",
-        "serverless": "^3.23.0"
+        "serverless": "^3.32.2"
     }
 }
